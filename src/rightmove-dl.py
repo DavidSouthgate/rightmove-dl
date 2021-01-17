@@ -146,7 +146,10 @@ def download_virtual_tours(virtual_tours):
     ydl_opts = {}
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         for url in virtual_tours:
-            ydl.download([url])
+            try:
+                ydl.download([url])
+            except youtube_dl.utils.DownloadError as e:
+                pass
 
 def delete_directory_if_empty(directory):
     if len(os.listdir(directory)) == 0:
