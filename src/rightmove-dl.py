@@ -156,7 +156,7 @@ def invalid_argument_count():
     eprint("Expected exactly one command line argument")
     eprint("")
     eprint("Usage:")
-    eprint("    python rightmove-downloader.py <Rightmove Property URL>")
+    eprint("    python rightmove-dl.py <Rightmove Property URL>")
     eprint("")
 
 def eprint(*args, **kwargs):
