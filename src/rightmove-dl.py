@@ -5,6 +5,7 @@ import shutil
 import requests
 import json
 import youtube_dl
+import re
 
 def main():
     if len(sys.argv) != 2:
@@ -15,9 +16,9 @@ def main():
     content = page.content
 
     data = get_page_data(content)
-    name = get_name(data)
-
-    directory = os.getcwd() + "/" + name
+    
+    directory_name = get_directory_name(data)
+    directory = os.getcwd() + "/" + directory_name
     os.mkdir(directory)
     os.chdir(directory)
 
@@ -69,6 +70,18 @@ def process_json_dump(directory, data):
 def get_name(data):
     return data["propertyData"]["address"]["displayAddress"].strip()
 
+def get_directory_name(data):
+    name = get_name(data)
+    name = name.replace("/", "-")
+    name = name.replace(" ,", ",")
+    return get_safe_name(name)
+
+def get_safe_name(name):
+    name = re.sub("[^A-Za-z0-9\- ,._]", "", name)
+    while "  " in name:
+        name.replace("  ", " ")
+    return name
+
 def get_page_data(content):
     search = "    window.PAGE_MODEL = "
     for line in content.splitlines():
@@ -94,9 +107,9 @@ def get_image_filename(image):
     extension = filename.split(".")[-1]
 
     if image["name"] is not None:
-        return image["name"] + "." + extension
-    else:
-        return filename
+        filename = image["name"] + "." + extension
+
+    return get_safe_name(filename)
 
 def get_floorplans(data):
     floorplans = []
